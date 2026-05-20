@@ -3,104 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Last Bell Loading...</title>
+    <title>Spring Loading 2026</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&display=swap');
+
         body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             margin: 0;
-            text-transform: uppercase;
-        }
-
-        .container {
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            /* Яркий весенний градиент */
+            background: linear-gradient(-45deg, #a8e6cf, #dcedc1, #ffd3b6, #ffaaa5, #87ceeb);
+            background-size: 400% 400%;
+            animation: springGradient 15s ease infinite;
+            color: #333;
             text-align: center;
-            padding: 20px;
-            border: 2px solid #fff;
-            position: relative;
+            overflow: hidden;
         }
 
-        h1 { font-size: 1.5rem; letter-spacing: 2px; }
-
-        /* Прогресс-бар */
-        .progress-container {
-            width: 300px;
-            height: 20px;
-            border: 1px solid #fff;
-            margin: 20px 0;
-            position: relative;
+        @keyframes springGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .progress-bar {
-            height: 100%;
-            /* Цвет RGB, который мы выбрали (Электрик) */
-            background-color: rgb(47, 0, 255); 
-            width: 0%; /* Меняется через JS */
-            transition: width 1s ease-in-out;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 50px 30px;
+            border-radius: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
         }
 
-        .status { font-size: 0.8rem; margin-top: 10px; color: #888; }
-        
-        #timer { font-size: 2rem; font-weight: bold; margin: 15px 0; }
+        .typewriter-container {
+            height: 60px; /* Чтобы текст не прыгал при удалении */
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #222;
+            display: inline;
+        }
+
+        /* Тот самый переливающийся курсор */
+        .cursor {
+            display: inline-block;
+            width: 12px;
+            height: 1.6rem;
+            background: #222;
+            margin-left: 5px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        #timer {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: #000;
+            letter-spacing: -2px;
+        }
+
+        .units {
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-around;
+            opacity: 0.6;
+            font-weight: 900;
+            color: #000;
+        }
+
+        .exact-time {
+            font-size: 1rem;
+            margin-top: 40px;
+            font-weight: 400;
+            color: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div>System Status: Loading Future...</div>
-        <div id="timer">00:00:00:00</div>
-        
-        <div class="progress-container">
-            <div class="progress-bar" id="bar"></div>
+    <div class="glass-card">
+        <div class="typewriter-container">
+            <h1 id="typewriter"></h1><span class="cursor"></span>
         </div>
         
-        <div class="status" id="percent">DOWNLOAD: 0%</div>
+        <div id="timer">00:00:00:00</div>
+        
+        <div class="units">
+            <span>ДНИ</span>
+            <span>ЧАСЫ</span>
+            <span>МИН</span>
+            <span>СЕК</span>
+        </div>
+
+        <div class="exact-time">
+            [ 26.05.2026 — 11:00 МСК ]
+        </div>
     </div>
 
     <script>
-        // УСТАНОВИ СВОЮ ДАТУ ТУТ (Год, Месяц - 1, Число)
-        // Месяцы считаются от 0 (Январь - 0, Май - 4)
-        const targetDate = new Date(2026, 4, 23, 10, 0, 0).getTime();
-
-        // Дата начала отсчета (например, 1 сентября прошлого года), чтобы считать %
-        const startDate = new Date(2025, 8, 1).getTime();
+        // ЛОГИКА ТАЙМЕРА
+        const targetDate = new Date("May 26, 2026 11:00:00").getTime();
 
         function updateTimer() {
             const now = new Date().getTime();
             const distance = targetDate - now;
-
-            // Расчет времени
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Вывод таймера
-            document.getElementById("timer").innerHTML = 
-                `${days}D:${hours}H:${minutes}M:${seconds}S`;
-
-            // Расчет прогресса
-            const totalDuration = targetDate - startDate;
-            const timePassed = now - startDate;
-            let progress = (timePassed / totalDuration) * 100;
             
-            if (progress > 99.9) progress = 99.9; // Оставляем эффект "почти готово"
-            if (distance < 0) {
-                progress = 100;
-                document.getElementById("timer").innerHTML = "FINISH";
-            }
+            const d = days.toString().padStart(2, '0');
+            const h = hours.toString().padStart(2, '0');
+            const m = minutes.toString().padStart(2, '0');
+            const s = seconds.toString().padStart(2, '0');
 
-            document.getElementById("bar").style.width = progress + "%";
-            document.getElementById("percent").innerHTML = `DOWNLOAD: ${progress.toFixed(1)}%`;
+            document.getElementById("timer").innerHTML = `${d}:${h}:${m}:${s}`;
         }
-
         setInterval(updateTimer, 1000);
         updateTimer();
+
+        // ЛОГИКА ПЕЧАТНОЙ МАШИНКИ
+        const textElement = document.getElementById('typewriter');
+        const phrases = [
+            "Вас ожидает кое-что особенное...",
+            "Событие, которое нельзя пропустить",
+            "До момента X осталось:",
+            "Встречаемся на главной линейке года",
+            "История начинается здесь...",
+            "Станьте свидетелем нашего финала",
+            "Мы подготовили для вас лучшее",
+            "Время летит, но моменты остаются",
+            "Ваше место в зале уже забронировано",
+            "Приготовьтесь к теплым эмоциям!"
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typeSpeed = 100;
+
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+                typeSpeed = 50;
+            } else {
+                textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+                typeSpeed = 100;
+            }
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                typeSpeed = 2000; // Пауза перед удалением
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+        type();
     </script>
 </body>
 </html>
