@@ -15,13 +15,12 @@
             align-items: center;
             min-height: 100vh;
             font-family: 'Montserrat', sans-serif;
-            /* Яркий весенний градиент */
             background: linear-gradient(-45deg, #a8e6cf, #dcedc1, #ffd3b6, #ffaaa5, #87ceeb);
             background-size: 400% 400%;
             animation: springGradient 15s ease infinite;
             color: #333;
             text-align: center;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         @keyframes springGradient {
@@ -35,32 +34,35 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            padding: 50px 30px;
+            padding: 40px 20px;
             border-radius: 40px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            width: 90%;
+            width: 85%;
             max-width: 600px;
+            margin: 20px;
         }
 
         .typewriter-container {
-            height: 60px; /* Чтобы текст не прыгал при удалении */
-            margin-bottom: 20px;
+            min-height: 80px; /* Увеличил, чтобы фразы в 2 строки на мобилках не дергали экран */
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         h1 {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             color: #222;
-            display: inline;
+            margin: 0;
         }
 
-        /* Тот самый переливающийся курсор */
         .cursor {
             display: inline-block;
-            width: 12px;
-            height: 1.6rem;
+            width: 8px;
+            height: 1.4rem;
             background: #222;
             margin-left: 5px;
             animation: blink 0.8s infinite;
@@ -73,29 +75,45 @@
         }
 
         #timer {
-            font-size: 4.5rem;
+            /* Гибкий размер: минимум 2.5rem, максимум 4.5rem */
+            font-size: clamp(2.5rem, 10vw, 4.5rem); 
             font-weight: 900;
-            margin-bottom: 10px;
+            margin: 15px 0 5px 0;
             color: #000;
-            letter-spacing: -2px;
+            letter-spacing: -1px;
+            white-space: nowrap; /* Чтобы не разрывался на две строки */
         }
 
         .units {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             display: flex;
             justify-content: space-around;
             opacity: 0.6;
             font-weight: 900;
             color: #000;
+            letter-spacing: 1px;
         }
 
         .exact-time {
-            font-size: 1rem;
-            margin-top: 40px;
+            font-size: 0.9rem;
+            margin-top: 30px;
             font-weight: 400;
             color: rgba(0, 0, 0, 0.5);
             border-top: 1px solid rgba(0, 0, 0, 0.1);
             padding-top: 20px;
+        }
+
+        /* Адаптация для маленьких экранов (телефонов) */
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 30px 15px;
+            }
+            h1 {
+                font-size: 1.1rem;
+            }
+            .units {
+                font-size: 0.6rem;
+            }
         }
     </style>
 </head>
@@ -121,12 +139,17 @@
     </div>
 
     <script>
-        // ЛОГИКА ТАЙМЕРА
         const targetDate = new Date("May 26, 2026 11:00:00").getTime();
 
         function updateTimer() {
             const now = new Date().getTime();
             const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById("timer").innerHTML = "00:00:00:00";
+                return;
+            }
+
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -142,7 +165,6 @@
         setInterval(updateTimer, 1000);
         updateTimer();
 
-        // ЛОГИКА ПЕЧАТНОЙ МАШИНКИ
         const textElement = document.getElementById('typewriter');
         const phrases = [
             "Вас ожидает кое-что особенное...",
@@ -167,20 +189,20 @@
             if (isDeleting) {
                 textElement.textContent = currentPhrase.substring(0, charIndex - 1);
                 charIndex--;
-                typeSpeed = 50;
+                typeSpeed = 40;
             } else {
                 textElement.textContent = currentPhrase.substring(0, charIndex + 1);
                 charIndex++;
-                typeSpeed = 100;
+                typeSpeed = 80;
             }
 
             if (!isDeleting && charIndex === currentPhrase.length) {
                 isDeleting = true;
-                typeSpeed = 2000; // Пауза перед удалением
+                typeSpeed = 3000; 
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
                 phraseIndex = (phraseIndex + 1) % phrases.length;
-                typeSpeed = 500;
+                typeSpeed = 400;
             }
 
             setTimeout(type, typeSpeed);
